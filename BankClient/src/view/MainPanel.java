@@ -82,5 +82,18 @@ public class MainPanel extends JPanel {
      * @param str string containing the account number
      */
     public void addAccount(String str) {
-        accountNumbers.addElement(str); }
+        accountNumbers.addElement(str);
+        //Select the first account added (the checking account) by default:
+        if (accountNumbers.size() == 1)
+            jlAccountNumbers.setSelectedIndex(0);
+    }
+
+    /**
+     * Displays the balance of the current bank account.
+     *
+     * @param balance the balance, as text
+     */
+    public void setBalance(String balance) {
+        accountOperationsPanel.setBalance(balance);
+    }
 }

@@ -34,6 +34,9 @@ public class AccountOperationsPanel extends JPanel {
         this.add(bBill);
         this.add(bHistory);
     }
+    public void setBalance(String balance) {
+        lblBalance.setText("Balance : " + balance + " $");
+    }
     public void setListener(ActionListener listener) {
         bSavings.addActionListener(listener);
         bDeposit.addActionListener(listener);

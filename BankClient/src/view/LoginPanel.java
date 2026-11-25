@@ -26,7 +26,13 @@ public class LoginPanel extends JPanel {
         JPanel p1 = new JPanel();
         JPanel p2 = new JPanel();
         JPanel p3 = new JPanel();
-        JPanel pAll = new JPanel(new GridLayout(3,1));
+        JPanel p0 = new JPanel();
+        JLabel lHint = new JLabel("<html><div style='text-align:center'>To create an account:<br>"
+                + "Account number = 6 to 8 characters (uppercase letters and digits only)<br>"
+                + "PIN = 4 to 5 digits</div></html>", SwingConstants.CENTER);
+        lHint.setForeground(new Color(0x555555));
+        p0.add(lHint);
+        JPanel pAll = new JPanel(new GridLayout(4,1));
 
         p1.add(txtClientAccountNumber);
         p2.add(txtPin);
@@ -34,6 +40,7 @@ public class LoginPanel extends JPanel {
         p3.add(bConnect);
 
         this.setLayout(new BorderLayout());
+        pAll.add(p0);
         pAll.add(p1);
         pAll.add(p2);
         pAll.add(p3);
@@ -45,10 +52,18 @@ public class LoginPanel extends JPanel {
         bConnect.addActionListener(listener);
     }
     public String getClientAccountNumber() {
-        return this.txtClientAccountNumber.getText();
+        return this.txtClientAccountNumber.getText().trim();
     }
     public String getPin() {
-        return this.txtPin.getText();
+        return this.txtPin.getText().trim();
+    }
+    /** @return true if the account number has 6-8 uppercase letters/digits. */
+    public boolean isAccountNumberValid() {
+        return getClientAccountNumber().trim().matches("[A-Z0-9]{6,8}");
+    }
+    /** @return true if the PIN has 4-5 digits. */
+    public boolean isPinValid() {
+        return getPin().trim().matches("[0-9]{4,5}");
     }
     public void clear() {
         this.txtClientAccountNumber.setText("");

@@ -24,6 +24,16 @@ public class LoginListener implements ActionListener {
             actionName = ((JButton)source).getActionCommand();
             switch (actionName) {
                 case "NEW":
+                    if (!loginPanel.isAccountNumberValid()) {
+                        JOptionPane.showMessageDialog(loginPanel,
+                                "The account number must have 6 to 8 characters (uppercase letters and digits only).");
+                        return;
+                    }
+                    if (!loginPanel.isPinValid()) {
+                        JOptionPane.showMessageDialog(loginPanel,
+                                "The PIN must have 4 to 5 digits.");
+                        return;
+                    }
                     client.send("NEW "+loginPanel.getClientAccountNumber()+":"+loginPanel.getPin());
                     break;
                 case "CONNECT":

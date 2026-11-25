@@ -43,7 +43,7 @@ public class BankServer extends Server {
         if (super.start()) {
             this.bank = BankIO.load();
             if (this.bank==null)
-                this.bank = new Bank("BankEts");
+                this.bank = new Bank("Bank");
             inactiveConnectionsThread = new InactiveConnectionsThread(this);
             inactiveConnectionsThread.start();
             return true;

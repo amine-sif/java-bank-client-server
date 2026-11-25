@@ -16,7 +16,7 @@ import java.awt.*;
  */
 public class MainFrame extends JFrame implements Runnable, Observer {
 
-    public static final String TITLE = "BankEts - Client";
+    public static final String TITLE = "Bank App - Client";
     private Client client;
     private MainPanel mainPanel;
     private JMenu mStart;

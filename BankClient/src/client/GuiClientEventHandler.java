@@ -46,13 +46,17 @@ public class GuiClientEventHandler implements EventHandler {
                 case "NEW":
                     arg = event.getArgument();
                     if (arg.trim().startsWith("NO")) {
-                        JOptionPane.showMessageDialog(mainPanel,"New account refused");
+                        JOptionPane.showMessageDialog(mainPanel,"New account refused.\n\n"
+                                + "The account number must have 6 to 8 characters (uppercase letters and digits only).\n"
+                                + "The PIN must have 4 to 5 digits.\n"
+                                + "The account number may also already be taken.");
                     }
                     else {
                         mainPanel.hideLoginPanel();
                         mainPanel.showClientAccountPanel();
-                        str = arg.substring(arg.indexOf("OK")+2).trim();
-                        mainPanel.addAccount(str);
+                        str = arg.substring(arg.indexOf("OK")+2).trim(); // "123456[CHECKING] 0.0"
+                        mainPanel.addAccount(str.substring(0, str.indexOf("]")+1));
+                        mainPanel.setBalance(str.substring(str.indexOf("]")+1).trim());
                     }
                     break;
                 case "CONNECT":
@@ -68,34 +72,54 @@ public class GuiClientEventHandler implements EventHandler {
                         for (String s:t) {
                             mainPanel.addAccount(s.substring(0,s.indexOf("]")+1));
                         }
+                        // The first entry is the checking account, which is selected by default:
+                        mainPanel.setBalance(t[0].substring(t[0].indexOf("]")+1).trim());
                     }
                     break;
                 /******************* ACCOUNT SELECTION *******************/
                 case "SAVINGS" :
-                    arg = event.getArgument();
-                    JOptionPane.showMessageDialog(mainPanel,"SAVINGS "+arg);
+                    arg = event.getArgument().trim();
+                    if (arg.startsWith("OK")) {
+                        mainPanel.addAccount(arg.substring(2).trim() + "[SAVINGS]");
+                        JOptionPane.showMessageDialog(mainPanel,"Savings account created");
+                    } else {
+                        JOptionPane.showMessageDialog(mainPanel,"Could not create a savings account (you may already have one).");
+                    }
                     break;
                 case "SELECT" :
-                    arg = event.getArgument();
-                    JOptionPane.showMessageDialog(mainPanel,"SELECT "+arg);
+                    arg = event.getArgument().trim();
+                    if (arg.startsWith("OK")) {
+                        t = arg.substring(2).trim().split(" "); // [accountNumber, balance]
+                        if (t.length >= 2)
+                            mainPanel.setBalance(t[1]);
+                    } else {
+                        JOptionPane.showMessageDialog(mainPanel,"Could not select this account.");
+                    }
                     break;
 
                 /******************* BANKING OPERATIONS *******************/
                 case "DEPOSIT" :
-                    arg = event.getArgument();
-                    JOptionPane.showMessageDialog(mainPanel,"DEPOSIT "+arg);
-                    break;
                 case "WITHDRAW" :
-                    arg = event.getArgument();
-                    JOptionPane.showMessageDialog(mainPanel,"WITHDRAW "+arg);
-                    break;
                 case "BILL" :
-                    arg = event.getArgument();
-                    JOptionPane.showMessageDialog(mainPanel,"BILL " + arg);
-                    break;
                 case "TRANSFER" :
-                    arg = event.getArgument();
-                    JOptionPane.showMessageDialog(mainPanel,"TRANSFER " + arg);
+                    arg = event.getArgument().trim();
+                    if (arg.startsWith("OK")) {
+                        str = arg.substring(2).trim();
+                        mainPanel.setBalance(str);
+                        JOptionPane.showMessageDialog(mainPanel, eventType + " successful.\nNew balance : " + str + " $");
+                    } else {
+                        JOptionPane.showMessageDialog(mainPanel, eventType + " refused (invalid amount, insufficient funds or unknown account).");
+                    }
+                    break;
+                case "HISTORY" :
+                    arg = event.getArgument().trim();
+                    if (arg.startsWith("NO")) {
+                        JOptionPane.showMessageDialog(mainPanel,"No history available.");
+                    } else {
+                        JTextArea area = new JTextArea(arg.isEmpty() ? "No operations yet." : arg, 15, 40);
+                        area.setEditable(false);
+                        JOptionPane.showMessageDialog(mainPanel, new JScrollPane(area), "Account history", JOptionPane.PLAIN_MESSAGE);
+                    }
                     break;
                 /******************* DEFAULT HANDLING *******************/
                 default:
